@@ -13,4 +13,5 @@ class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
         lookup_field = 'id'
         extra_kwargs = {
             'url': {'lookup_field': 'id'},
+            'like': {'read_only': True},
         }

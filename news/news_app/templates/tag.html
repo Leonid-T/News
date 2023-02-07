@@ -1,5 +1,5 @@
 {% extends 'block/base.html' %}
-{% block title %}News tag: {{ tag }}{% endblock %}
+{% block title %}News tag: {{ tag.name }}{% endblock %}
 {% block content %}
 <div class="container">
   <div id="posts" class="row">
@@ -7,12 +7,12 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'news:index' %}">Список новостей</a></li>
-          <li class="breadcrumb-item active">{{ tag }}</li>
+          <li class="breadcrumb-item active">{{ tag.name }}</li>
         </ol>
       </nav>
       <p class="my-3">Другие теги:
         {% for ctag in common_tags %}
-        <a href="{% url 'news:tag' ctag.slug %}" class="badge text-bg-primary text-decoration-none my-2">#{{ ctag }}</a>
+        <a href="{% url 'news:tag' ctag.id %}" class="badge text-bg-primary text-decoration-none my-2">#{{ ctag.name }}</a>
         {% endfor %}
       </p>
     </div>
@@ -23,7 +23,4 @@
 {% block script %}
 {% load static %}
 <script src="{% static 'scripts/load_news.js' %}" defer></script>
-<!--<script src="{% static 'scripts/csrftoken.js' %}" defer></script>-->
-<!--<script src="{% static 'scripts/index.js' %}" defer></script>-->
-<!--<script src="{% static 'scripts/like_dislike.js' %}" defer></script>-->
 {% endblock %}

@@ -15,10 +15,16 @@
       <hr>
       <p>{{ post.text }}</p>
       {% for tag in post.tags.all %}
-      <a href="{% url 'news:tag' tag.slug %}" class="badge text-bg-primary text-decoration-none my-2">#{{ tag }}</a>
+      <a href="{% url 'news:tag' tag.id %}" class="badge text-bg-primary text-decoration-none my-2">#{{ tag.name }}</a>
       {% endfor %}
       <hr>
-      <h5>Опубликовано: {{ post.added_at }}</h5>
+      <div class="d-flex justify-content-between">
+        <h5>Опубликовано: {{ post.added_at }}</h5>
+        <div class="d-flex">
+          <h5 id="rating_{{ post.id }}" class="mx-2">{{ post.like_count }}</h5>
+          <button id="like_{{ post.id }}" class="like mx-2 {{ is_like }}" onclick="like({{ post.id }})"></button>
+        </div>
+      </div>
       <hr>
     </div>
   </div>
@@ -26,7 +32,6 @@
 {% endblock %}
 {% block script %}
 {% load static %}
-<!--<script src="{% static 'scripts/csrftoken.js' %}" defer></script>-->
-<!--<script src="{% static 'scripts/question.js' %}" defer></script>-->
-<!--<script src="{% static 'scripts/like_dislike.js' %}" defer></script>-->
+<script src="{% static 'scripts/csrftoken.js' %}" defer></script>
+<script src="{% static 'scripts/like.js' %}" defer></script>
 {% endblock %}

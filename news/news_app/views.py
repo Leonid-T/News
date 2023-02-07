@@ -1,4 +1,4 @@
-from django.views import generic, View
+from django.views import View
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from django.urls import reverse
@@ -34,23 +34,30 @@ class IndexView(View):
         return render(request, self.template_name)
 
 
-class DetailView(generic.DetailView):
-    model = Post
+class DetailView(View):
     template_name = 'detail.html'
 
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk')
-        obj = get_object_or_404(Post, pk=pk)
-        obj.views_counter()
-        return obj
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        post.views_counter()
+
+        user = request.user
+        is_like = False
+        if user.is_authenticated:
+            is_like = post.is_like(user)
+
+        return render(request, self.template_name, context={
+            'post': post,
+            'is_like': 'active' if is_like else ''
+        })
 
 
 class TagView(View):
     template_name = 'tag.html'
     paginate_by = 6
 
-    def get(self, request, tag_slug):
-        tag = get_object_or_404(Tag, slug=tag_slug)
+    def get(self, request, pk):
+        tag = get_object_or_404(Tag, pk=pk)
         common_tags = Post.tags.most_common()
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -69,12 +76,12 @@ class TagView(View):
 
         return render(request, self.template_name, context={
             'tag': tag,
-            'common_tags': common_tags
+            'common_tags': common_tags[:10]
         })
 
 
 class StatisticsView(View):
-    paginate_by = 8
+    paginate_by = 10
     template_name = 'statistics.html'
 
     def get(self, request):
@@ -115,6 +122,7 @@ class SignupView(View):
             if user is not None:
                 login(request, user)
                 return JsonResponse({'url': reverse('news:index')}, status=200)
+
         return JsonResponse({'error': form.errors}, status=400)
 
 
@@ -130,5 +138,21 @@ class SigninView(View):
             if user is not None:
                 login(request, user)
                 return JsonResponse({'url': reverse('news:index')}, status=200)
+
         form.add_error('password', 'Неправильное имя пользователя или пароль')
         return JsonResponse({'error': form.errors}, status=400)
+
+
+class VoteView(View):
+    def post(self, request, pk):
+        user = request.user
+        if not user.is_authenticated:
+            return JsonResponse({'error': 'Is not authenticated'}, status=400)
+
+        post = get_object_or_404(Post, pk=pk)
+        result = post.set_like(user)
+        return JsonResponse({
+            'id': post.id,
+            'result': result,
+            'rating': post.like_count(),
+        }, status=200)
