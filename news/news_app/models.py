@@ -9,3 +9,8 @@ class Post(models.Model):
     added_at = models.DateTimeField(blank=True, auto_now_add=True)
     image = models.ImageField(default='default.jpg')
     tags = TaggableManager()
+    views_count = models.PositiveIntegerField(default=0)
+
+    def views_counter(self):
+        self.views_count += 1
+        self.save()

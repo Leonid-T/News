@@ -2,15 +2,14 @@
 {% block title %}News{% endblock %}
 {% block content %}
 <div class="container">
-  <div class="row">
-    {% for post in news_list %}
+  <div id="posts" class="row">
     {% include 'block/post.html' %}
-    {% endfor %}
   </div>
 </div>
 {% endblock %}
 {% block script %}
 {% load static %}
+<script src="{% static 'scripts/load_news.js' %}" defer></script>
 <!--<script src="{% static 'scripts/csrftoken.js' %}" defer></script>-->
 <!--<script src="{% static 'scripts/index.js' %}" defer></script>-->
 <!--<script src="{% static 'scripts/like_dislike.js' %}" defer></script>-->

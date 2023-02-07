@@ -1,0 +1,21 @@
+{% extends 'block/base.html' %}
+{% block title %}News statistics{% endblock %}
+{% block content %}
+<div class="container">
+  <div id="posts" class="row">
+    <div class="col-lg-9">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'news:index' %}">Список новостей</a></li>
+          <li class="breadcrumb-item active">Статистика просмотров</li>
+        </ol>
+      </nav>
+    </div>
+    {% include 'block/post_statistic.html' %}
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% load static %}
+<script src="{% static 'scripts/load_news.js' %}" defer></script>
+{% endblock %}
