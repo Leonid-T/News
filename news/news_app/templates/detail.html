@@ -1,0 +1,32 @@
+{% extends 'block/base.html' %}
+{% block title %}{{ question.title }}{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-9">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'news:index' %}">Список новостей</a></li>
+          <li class="breadcrumb-item active">{{ post.title }}</li>
+        </ol>
+      </nav>
+      <h1>{{ post.title }}</h1>
+      <img src="/media/{{ post.image }}" class="img-fluid rounded mb-3" alt="">
+      <hr>
+      <p>{{ post.text }}</p>
+      {% for tag in post.tags.all %}
+      <a href="{% url 'news:tag' tag.slug %}" class="badge text-bg-primary text-decoration-none my-2">#{{ tag }}</a>
+      {% endfor %}
+      <hr>
+      <h5>Опубликовано: {{ post.added_at }}</h5>
+      <hr>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% load static %}
+<!--<script src="{% static 'scripts/csrftoken.js' %}" defer></script>-->
+<!--<script src="{% static 'scripts/question.js' %}" defer></script>-->
+<!--<script src="{% static 'scripts/like_dislike.js' %}" defer></script>-->
+{% endblock %}
