@@ -11,7 +11,7 @@ class Post(models.Model):
     image = models.ImageField(default='default.jpg')
     tags = TaggableManager()
     views_count = models.PositiveIntegerField(default=0)
-    like = models.ManyToManyField(User)
+    like = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.title
