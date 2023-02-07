@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate
 
 
 class SignupForm(forms.Form):
+    """
+    User registration form
+    """
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'id': 'username',
@@ -18,6 +21,9 @@ class SignupForm(forms.Form):
     }))
 
     def clean(self):
+        """
+        Validation of registration
+        """
         super().clean()
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
@@ -45,6 +51,9 @@ class SignupForm(forms.Form):
 
 
 class SigninForm(forms.Form):
+    """
+    User authorization form
+    """
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'id': 'username',
@@ -55,6 +64,9 @@ class SigninForm(forms.Form):
     }))
 
     def clean(self):
+        """
+        Validation of authorization
+        """
         super().clean()
         username = self.cleaned_data.get('username')
         if not User.objects.filter(username=username).exists():

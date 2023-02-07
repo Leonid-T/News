@@ -5,6 +5,9 @@ from taggit.managers import TaggableManager
 
 
 class Post(models.Model):
+    """
+    News post model
+    """
     title = models.CharField(max_length=200)
     text = models.TextField()
     added_at = models.DateTimeField(blank=True, auto_now_add=True)
@@ -17,16 +20,25 @@ class Post(models.Model):
         return self.title
 
     def views_counter(self):
+        """
+        News post view counter
+        """
         self.views_count += 1
         self.save()
 
     def like_count(self):
+        """
+        Number of likes
+        """
         return self.like.all().count()
 
     def is_like(self, user):
         return self.like.filter(id=user.id).exists()
 
     def set_like(self, user):
+        """
+        Set or unset like
+        """
         if self.is_like(user):
             self.like.remove(user)
             result = False

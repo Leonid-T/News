@@ -5,6 +5,9 @@ from .models import Post
 
 
 class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
+    """
+    News post serializer
+    """
     tags = TagListSerializerField()
 
     class Meta:

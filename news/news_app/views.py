@@ -13,11 +13,15 @@ from .forms import SigninForm, SignupForm
 
 
 class IndexView(View):
+    """
+    View of news list
+    """
     paginate_by = 6
     template_name = 'index.html'
 
     def get(self, request):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # dynamic loading of news
             posts = Post.objects.order_by('-added_at')
 
             paginator = Paginator(posts, self.paginate_by)
@@ -25,6 +29,7 @@ class IndexView(View):
             try:
                 page_obj = paginator.page(page_number)
             except (EmptyPage, PageNotAnInteger):
+                # if news posts run out or uncorrect page parameter
                 return JsonResponse({'status': 404})
 
             return render(request, 'block/post.html', context={
@@ -35,12 +40,16 @@ class IndexView(View):
 
 
 class DetailView(View):
+    """
+    News post detail view
+    """
     template_name = 'detail.html'
 
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         post.views_counter()
 
+        # checking if the user has liked
         user = request.user
         is_like = False
         if user.is_authenticated:
@@ -53,6 +62,9 @@ class DetailView(View):
 
 
 class TagView(View):
+    """
+    View of news list with tag
+    """
     template_name = 'tag.html'
     paginate_by = 6
 
@@ -61,6 +73,7 @@ class TagView(View):
         common_tags = Post.tags.most_common()
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # dynamic loading of news
             posts = Post.objects.filter(tags=tag).order_by('-added_at')
 
             paginator = Paginator(posts, self.paginate_by)
@@ -68,6 +81,7 @@ class TagView(View):
             try:
                 page_obj = paginator.page(page_number)
             except (EmptyPage, PageNotAnInteger):
+                # if news posts run out or uncorrect page parameter
                 return JsonResponse({'status': 404})
 
             return render(request, 'block/post.html', context={
@@ -81,11 +95,15 @@ class TagView(View):
 
 
 class StatisticsView(View):
+    """
+    View of news list with statistic
+    """
     paginate_by = 10
     template_name = 'statistics.html'
 
     def get(self, request):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # dynamic loading of news
             posts = Post.objects.order_by('-views_count', '-added_at')
 
             paginator = Paginator(posts, self.paginate_by)
@@ -93,6 +111,7 @@ class StatisticsView(View):
             try:
                 page_obj = paginator.page(page_number)
             except (EmptyPage, PageNotAnInteger):
+                # if news posts run out or uncorrect page parameter
                 return JsonResponse({'status': 404})
 
             return render(request, 'block/post_statistic.html', context={
@@ -103,6 +122,10 @@ class StatisticsView(View):
 
 
 class PostViewSet(viewsets.ModelViewSet):
+    """
+    REST API for post table
+    Without authorization!!!
+    """
     search_fields = ['content', 'title']
     serializer_class = PostSerializer
     queryset = Post.objects.order_by('-added_at')
@@ -111,6 +134,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class SignupView(View):
+    """
+    Registration view
+    """
     def get(self, request):
         form = SignupForm()
         return render(request, 'signup.html', {'form': form})
@@ -127,9 +153,12 @@ class SignupView(View):
 
 
 class SigninView(View):
+    """
+    Authorization view
+    """
     def get(self, request):
         form = SigninForm()
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'signin.html', {'form': form})
 
     def post(self, request):
         form = SigninForm(request.POST)
@@ -144,6 +173,9 @@ class SigninView(View):
 
 
 class VoteView(View):
+    """
+    Setting or unsetting like
+    """
     def post(self, request, pk):
         user = request.user
         if not user.is_authenticated:
